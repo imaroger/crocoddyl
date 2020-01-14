@@ -20,6 +20,7 @@ SET(${PROJECT_NAME}_SOURCES
   core/solvers/box-ddp.cpp
   core/states/euclidean.cpp
   core/actions/unicycle.cpp
+  core/actions/human.cpp  
   core/actions/lqr.cpp
   core/actions/diff-lqr.cpp
   core/activations/quadratic.cpp
