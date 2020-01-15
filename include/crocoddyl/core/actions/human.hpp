@@ -16,7 +16,7 @@
 namespace crocoddyl {
 
 class ActionModelHuman : public ActionModelAbstract {
- public:
+ public: 
   ActionModelHuman();
   ~ActionModelHuman();
 
@@ -26,11 +26,15 @@ class ActionModelHuman : public ActionModelAbstract {
                 const Eigen::Ref<const Eigen::VectorXd>& u, const bool& recalc = true);
   boost::shared_ptr<ActionDataAbstract> createData();
 
-  const Eigen::Vector2d& get_cost_weights() const;
-  void set_cost_weights(const Eigen::Vector2d& weights);
+  const Eigen::VectorXd& get_cost_weights() const;
+  void set_cost_weights(const Eigen::VectorXd& weights);
+
+  const Eigen::Vector2d get_final_state() const;
+  void set_final_state(const Eigen::Vector2d& statef);
 
  private:
-  Eigen::Vector2d cost_weights_;
+  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(5);
+  Eigen::Vector2d final_state_;
   double dt_;
 };
 

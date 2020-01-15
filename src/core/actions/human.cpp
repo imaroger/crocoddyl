@@ -1,6 +1,7 @@
 #include "crocoddyl/core/utils/exception.hpp"
 #include "crocoddyl/core/actions/human.hpp"
 #include <iostream>
+#include <math.h>
 
 namespace crocoddyl {
 
@@ -27,15 +28,18 @@ void ActionModelHuman::calc(const boost::shared_ptr<ActionDataAbstract>& data,
   ActionDataHuman* d = static_cast<ActionDataHuman*>(data.get());
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
-  d->xnext << x[0] + (c * x[3] - s * u[5]) * dt_, 
-    x[1] + (c * x[5] + s * x[3]) * dt_,
-    x[2] + x[4] * dt_,
-    x[3] + u[0] * dt_,
-    x[4] + u[1] * dt_,
-    x[5] + u[2] * dt_;
-  d->r.head<3>() = cost_weights_[0] * x;
-  d->r.tail<2>() = cost_weights_[1] * u;
-  d->cost = 0.5 * d->r.transpose() * d->r;
+  d->xnext << x[0] + (c*x[3]-s*u[5])*dt_, 
+    x[1] + (c*x[5]+s*x[3])*dt_,
+    x[2] + x[4]*dt_,
+    x[3] + u[0]*dt_,
+    x[4] + u[1]*dt_,
+    x[5] + u[2]*dt_;
+  d->r << cost_weights_[0],
+  cost_weights_[1]*pow(u[0],2),
+  cost_weights_[2]*pow(u[1],2),
+  cost_weights_[3]*pow(u[2],2),
+  cost_weights_[4]*pow(atan((final_state_[1]-x[1])/(final_state_[0]-x[0]))-x[2],2);
+  d->cost = 0.5 * d->r.transpose() * d->r; //Here J is sum not vector
 }
 
 void ActionModelHuman::calcDiff(const boost::shared_ptr<ActionDataAbstract>& data,
@@ -74,8 +78,12 @@ boost::shared_ptr<ActionDataAbstract> ActionModelHuman::createData() {
   return boost::make_shared<ActionDataHuman>(this);
 }
 
-const Eigen::Vector2d& ActionModelHuman::get_cost_weights() const { return cost_weights_; }
+const Eigen::VectorXd& ActionModelHuman::get_cost_weights() const { return cost_weights_; }
 
-void ActionModelHuman::set_cost_weights(const Eigen::Vector2d& weights) { cost_weights_ = weights; }
+void ActionModelHuman::set_cost_weights(const Eigen::VectorXd& weights) { cost_weights_ = weights; }
+
+const Eigen::Vector2d& ActionModelHuman::get_cost_weights() const { return final_state_; } 
+
+void ActionModelHuman::set_final_state(const Eigen::Vector2d& statef){final_state_ = statef; }
 
 }  // namespace crocoddyl
