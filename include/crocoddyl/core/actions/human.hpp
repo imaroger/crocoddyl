@@ -26,10 +26,13 @@ class ActionModelHuman : public ActionModelAbstract {
                 const Eigen::Ref<const Eigen::VectorXd>& u, const bool& recalc = true);
   boost::shared_ptr<ActionDataAbstract> createData();
 
+  double costFunction(double x, double y, double theta, 
+                                          double u1, double u2);
+
   const Eigen::VectorXd& get_cost_weights() const;
   void set_cost_weights(const Eigen::VectorXd& weights);
 
-  const Eigen::Vector2d get_final_state() const;
+  const Eigen::Vector2d& get_final_state() const;
   void set_final_state(const Eigen::Vector2d& statef);
 
  private:
