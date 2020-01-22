@@ -53,6 +53,7 @@ bool SolverDDP::solve(const std::vector<Eigen::VectorXd>& init_xs, const std::ve
 
   bool recalc = true;
   for (iter_ = 0; iter_ < maxiter; ++iter_) {
+    std::cout << "SolverDDP::solve = " << iter_ << std::endl;
     while (true) {
       try {
         computeDirection(recalc);
@@ -75,6 +76,7 @@ bool SolverDDP::solve(const std::vector<Eigen::VectorXd>& init_xs, const std::ve
       steplength_ = *it;
 
       try {
+        std::cout << "steplength_" << steplength_ << std::endl;
         dV_ = tryStep(steplength_);
       } catch (std::exception& e) {
         continue;
@@ -92,6 +94,7 @@ bool SolverDDP::solve(const std::vector<Eigen::VectorXd>& init_xs, const std::ve
       }
     }
 
+    std::cout << "decreaseRegularization recalc =" << recalc << std::endl;
     if (steplength_ > th_stepdec_) {
       decreaseRegularization();
     }

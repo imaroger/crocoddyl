@@ -23,7 +23,7 @@ class SolverDDP : public SolverAbstract {
   ~SolverDDP();
 
   virtual bool solve(const std::vector<Eigen::VectorXd>& init_xs = DEFAULT_VECTOR,
-                     const std::vector<Eigen::VectorXd>& init_us = DEFAULT_VECTOR, const std::size_t& maxiter = 1e3,
+                     const std::vector<Eigen::VectorXd>& init_us = DEFAULT_VECTOR, const std::size_t& maxiter = 1e4,
                      const bool& is_feasible = false, const double& regInit = 1e-9);
   virtual void computeDirection(const bool& recalc = true);
   virtual double tryStep(const double& steplength = 1);
