@@ -115,8 +115,8 @@ namespace crocoddyl {
 // }
 
 ActionModelHuman::ActionModelHuman() : ActionModelAbstract(boost::make_shared<StateVector>(6), 3, 5), dt_(0.01) {
-  cost_weights_ << 1., 1.2, 1.7, 0.7, 5.2, 100;
-  final_state_ << 0.1, 0.1, 0.1;
+  cost_weights_ << 1., 1.2, 1.7, 0.7, 5.2, 1. , 1.;
+  final_state_ << 0., 0., 0.;
 }
 
 ActionModelHuman::~ActionModelHuman() {}
@@ -157,15 +157,18 @@ double ActionModelHuman::costFunction(double x, double y, double theta,
   double cost;
   double diff_theta = fmod(final_state_[2],M_PI) - fmod(theta,M_PI);
   double diff_theta_final = diff_theta + (( diff_theta > M_PI) ? - 2*M_PI : ((diff_theta< -M_PI) ? 2*M_PI: 0));
-  std::cout << "diff_theta_final " << diff_theta_final 
-            << " " << diff_theta << " "
-            << final_state_[2] << " " << theta << std::endl;
+  // std::cout << "diff_theta_final " << diff_theta_final 
+  //           << " " << diff_theta << " "
+  //           << final_state_[2] << " " << theta << std::endl;
 
   cost = 
     cost_weights_[0] + cost_weights_[1]*pow(u1,2) + cost_weights_[2]*pow(u2,2) +
     cost_weights_[3]*pow(u3,2) + cost_weights_[4]*
     pow(atan2(final_state_[1]-y,final_state_[0]-x)-theta,2) + 
-    cost_weights_[5]*(pow(final_state_[0]-x,2) + pow(final_state_[1]-y,2) + pow(diff_theta_final,2));
+    cost_weights_[5]*(pow(final_state_[0]-x,2) + pow(final_state_[1]-y,2)) + 
+    cost_weights_[6]*pow(diff_theta_final,2);
+    // (pow(final_state_[0] + cos(final_state_[2]) - x - cos(theta),2) +
+    // pow(final_state_[1] + sin(final_state_[2]) - y + sin(theta),2))); //+ pow(diff_theta_final,2));
   return cost;
 }
 

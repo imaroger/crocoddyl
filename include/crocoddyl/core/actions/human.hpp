@@ -36,7 +36,7 @@ class ActionModelHuman : public ActionModelAbstract {
   void set_final_state(const Eigen::Vector3d& statef);
 
  private:
-  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(6);
+  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(7);
   Eigen::Vector3d final_state_;
   double dt_;
 };
