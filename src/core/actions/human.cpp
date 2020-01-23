@@ -35,7 +35,7 @@ void ActionModelHuman::calc(const boost::shared_ptr<ActionDataAbstract>& data,
     x[5] + u[2]*dt_;
   d->cost = costFunction(x[0],x[1],x[2],u[0],u[1],u[2]); 
 
-  std::cout << "cost : " << d->cost << std::endl;
+  // std::cout << "cost : " << d->cost << std::endl;
 }
 
 double ActionModelHuman::costFunction(double x, double y, double theta, 
@@ -75,29 +75,25 @@ void ActionModelHuman::calcDiff(const boost::shared_ptr<ActionDataAbstract>& dat
   // Cost derivatives
   double h = 1e-5;
 
-  std::cout << "--- state ---" << std::endl; 
-  std::cout << "x: " << x[0] << " ,y: " << x[1] << " ,theta: " << x[2] << " ,vf: "
-    << x[3] << " ,w: " << x[4] << " ,vo: " << x[5] << std::endl;
-  std::cout << final_state_ << std::endl; 
-  std::cout << "--- control ---" << std::endl; 
-  std::cout << "u1: " << u[0] << "u2: " << u[1] << "u3: " << u[2] << std::endl;
+  // std::cout << "--- state ---" << std::endl; 
+  // std::cout << "x: " << x[0] << " ,y: " << x[1] << " ,theta: " << x[2] << " ,vf: "
+  //   << x[3] << " ,w: " << x[4] << " ,vo: " << x[5] << std::endl;
+  // std::cout << final_state_ << std::endl; 
+  // std::cout << "--- control ---" << std::endl; 
+  // std::cout << "u1: " << u[0] << "u2: " << u[1] << "u3: " << u[2] << std::endl;
 
   d->Lx << (costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
     (costFunction(x[0],x[1]+h,x[2],u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
     (costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
     0, 0, 0;
 
-  std::cout << "--- Lx---" << std::endl; 
-  std::cout << d->Lx << std::endl;
+  // std::cout << "--- Lx---" << std::endl; 
+  // std::cout << d->Lx << std::endl;
 
-  // d->Lu << (costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
-  //   (costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
-  //   (costFunction(x[0],x[1],x[2],u[0],u[1],u[2]+h) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h;
-  
   d->Lu << 2*cost_weights_[1]*u[0], 2*cost_weights_[2]*u[1], 2*cost_weights_[3]*u[2];
 
-  std::cout << "--- Lu---" << std::endl; 
-  std::cout << d->Lu << std::endl;   
+  // std::cout << "--- Lu---" << std::endl; 
+  // std::cout << d->Lu << std::endl;   
 
   d->Lxx.block(0,0,3,3) << (costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
     + costFunction(x[0]-h,x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dx²
@@ -118,32 +114,13 @@ void ActionModelHuman::calcDiff(const boost::shared_ptr<ActionDataAbstract>& dat
     (costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
     + costFunction(x[0],x[1],x[2]-h,u[0],u[1],u[2]))/pow(h,2); // dl/dtheta²;
 
-  std::cout << "--- Lxx---" << std::endl; 
-  std::cout << d->Lxx << std::endl;     
-
-  // d->Luu << (costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
-  //   + costFunction(x[0],x[1],x[2],u[0]-h,u[1],u[2]))/pow(h,2), // dl/du1²
-  //   (costFunction(x[0],x[1],x[2],u[0]+h,u[1]+h,u[2]) - costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]) 
-  //   - costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/du1du2
-  //   (costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]+h) - costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]) 
-  //   - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]+h) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/du1du3    
-  //   (costFunction(x[0],x[1],x[2],u[0]+h,u[1]+h,u[2]) - costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]) 
-  //   - costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/du2du1 
-  //   (costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
-  //   + costFunction(x[0],x[1],x[2],u[0],u[1]-h,u[2]))/pow(h,2), // dl/du2² 
-  //   (costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]+h) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]+h) 
-  //   - costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/du2du3     
-  //   (costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]+h) - costFunction(x[0],x[1],x[2],u[0]+h,u[1],u[2]) 
-  //   - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]+h) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/du3du1 
-  //   (costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]+h) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]+h) 
-  //   - costFunction(x[0],x[1],x[2],u[0],u[1]+h,u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/du3du2 
-  //   (costFunction(x[0],x[1],x[2],u[0],u[1],u[2]+h) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
-  //   + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]-h))/pow(h,2), // dl/du3² 
+  // std::cout << "--- Lxx---" << std::endl; 
+  // std::cout << d->Lxx << std::endl;     
 
   d->Luu.diagonal() << 2*cost_weights_[1], 2*cost_weights_[2], 2*cost_weights_[3];
 
-  std::cout << "--- Luu---" << std::endl; 
-  std::cout << d->Luu << std::endl;     
+  // std::cout << "--- Luu---" << std::endl; 
+  // std::cout << d->Luu << std::endl;     
 
   // Dynamic derivatives
   const double& c = std::cos(x[2]);
@@ -156,13 +133,13 @@ void ActionModelHuman::calcDiff(const boost::shared_ptr<ActionDataAbstract>& dat
     0., 0., 0., 0., 1., 0.,
     0., 0., 0., 0., 0., 1.;
 
-  std::cout << "--- Fx---" << std::endl; 
-  std::cout << d->Fx << std::endl;  
+  // std::cout << "--- Fx---" << std::endl; 
+  // std::cout << d->Fx << std::endl;  
 
   d->Fu.block(3,0,3,3).diagonal() << dt_, dt_, dt_;
 
-  std::cout << "--- Fu---" << std::endl; 
-  std::cout << d->Fu << std::endl;  
+  // std::cout << "--- Fu---" << std::endl; 
+  // std::cout << d->Fu << std::endl;  
 
 }
 
