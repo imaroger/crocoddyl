@@ -106,7 +106,7 @@ void ShootingProblem::rollout(const std::vector<Eigen::VectorXd>& us, std::vecto
     xs[i + 1] = data->xnext;
   }
   terminal_model_->calc(terminal_data_, xs.back());
-  std::cout << "****** End of rollout ******" << std::endl;
+  //std::cout << "****** End of rollout ******" << std::endl;
 }
 
 std::vector<Eigen::VectorXd> ShootingProblem::rollout_us(const std::vector<Eigen::VectorXd>& us) {
