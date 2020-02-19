@@ -64,7 +64,11 @@ void exposeActionHuman() {
       .add_property(
           "finalState",
           bp::make_function(&ActionModelHuman::get_final_state, bp::return_value_policy<bp::return_by_value>()),
-          bp::make_function(&ActionModelHuman::set_final_state), "final state");
+          bp::make_function(&ActionModelHuman::set_final_state), "final state")
+      .add_property(
+          "alpha",
+          bp::make_function(&ActionModelHuman::get_alpha, bp::return_value_policy<bp::return_by_value>()),
+          bp::make_function(&ActionModelHuman::set_alpha), "slowing parameter alpha");
   bp::register_ptr_to_python<boost::shared_ptr<ActionDataHuman> >();
 
   bp::class_<ActionDataHuman, bp::bases<ActionDataAbstract> >(

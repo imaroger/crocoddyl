@@ -1,5 +1,5 @@
-#include "crocoddyl/core/utils/exception.hpp"
-#include "crocoddyl/core/actions/human.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/actions/human.hpp"
 #include <iostream>
 #include <math.h>
 
@@ -8,6 +8,7 @@ namespace crocoddyl {
 ActionModelHuman::ActionModelHuman() : ActionModelAbstract(boost::make_shared<StateVector>(6), 3, 5), dt_(0.01) {
   cost_weights_ << 1., 1.2, 1.7, 0.7, 5.2, 1. , 1.;
   final_state_ << 0., 0., 0.;
+  alpha_ = 1.0;
 }
 
 ActionModelHuman::~ActionModelHuman() {}
@@ -27,8 +28,8 @@ void ActionModelHuman::calc(const boost::shared_ptr<ActionDataAbstract>& data,
   ActionDataHuman* d = static_cast<ActionDataHuman*>(data.get());
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
-  d->xnext << x[0] + (c*x[3]-s*x[5])*dt_, 
-    x[1] + (c*x[5]+s*x[3])*dt_,
+  d->xnext << x[0] + alpha_*(c*x[3]-s*x[5])*dt_, 
+    x[1] + alpha_*(c*x[5]+s*x[3])*dt_,
     x[2] + x[4]*dt_,
     x[3] + u[0]*dt_,
     x[4] + u[1]*dt_,
@@ -126,8 +127,8 @@ void ActionModelHuman::calcDiff(const boost::shared_ptr<ActionDataAbstract>& dat
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
 
-  d->Fx << 1., 0., (-s*x[3]-c*x[5]) * dt_, c*dt_, 0., -s*dt_,
-    0., 1., (c*x[3]-s*x[5]) * dt_, s*dt_, 0., c*dt_,
+  d->Fx << 1., 0., alpha_*(-s*x[3]-c*x[5]) * dt_, alpha_*c*dt_, 0., alpha_*-s*dt_,
+    0., 1., alpha_*(c*x[3]-s*x[5]) * dt_, alpha_*s*dt_, 0., alpha_*c*dt_,
     0., 0., 1., 0., dt_, 0.,
     0., 0., 0., 1., 0., 0.,
     0., 0., 0., 0., 1., 0.,
@@ -155,4 +156,7 @@ const Eigen::Vector3d& ActionModelHuman::get_final_state() const { return final_
 
 void ActionModelHuman::set_final_state(const Eigen::Vector3d& statef){final_state_ = statef; }
 
+const double ActionModelHuman::get_alpha() const { return alpha_; }
+
+void ActionModelHuman::set_alpha(const double slowing_param){alpha_ = slowing_param; }
 }  // namespace crocoddyl

@@ -9,8 +9,8 @@
 #ifndef CROCODDYL_CORE_ACTIONS_Human_HPP_
 #define CROCODDYL_CORE_ACTIONS_Human_HPP_
 
-#include "crocoddyl/core/action-base.hpp"
-#include "crocoddyl/core/states/euclidean.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/action-base.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/states/euclidean.hpp"
 #include <stdexcept>
 
 namespace crocoddyl {
@@ -35,10 +35,14 @@ class ActionModelHuman : public ActionModelAbstract {
   const Eigen::Vector3d& get_final_state() const;
   void set_final_state(const Eigen::Vector3d& statef);
 
+  const double get_alpha() const;
+  void set_alpha(const double slowing_param);
+
  private:
   Eigen::VectorXd cost_weights_ = Eigen::VectorXd(7);
   Eigen::Vector3d final_state_;
   double dt_;
+  double alpha_;
 };
 
 struct ActionDataHuman : public ActionDataAbstract {
