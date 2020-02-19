@@ -7,8 +7,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <iostream>
-#include "crocoddyl/core/utils/exception.hpp"
-#include "crocoddyl/core/solvers/ddp.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/solvers/ddp.hpp"
 
 namespace crocoddyl {
 

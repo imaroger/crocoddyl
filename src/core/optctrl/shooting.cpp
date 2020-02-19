@@ -6,8 +6,8 @@
 // All rights reserved.
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "crocoddyl/core/utils/exception.hpp"
-#include "crocoddyl/core/optctrl/shooting.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/optctrl/shooting.hpp"
 #include <iostream>
 #ifdef WITH_MULTITHREADING
 #include <omp.h>

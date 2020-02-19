@@ -11,7 +11,7 @@
 
 #include <Eigen/Cholesky>
 #include <vector>
-#include "crocoddyl/core/solver-base.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/solver-base.hpp"
 
 namespace crocoddyl {
 

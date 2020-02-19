@@ -6,7 +6,7 @@
 // All rights reserved.
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "crocoddyl/core/utils/exception.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
 
 namespace crocoddyl {
 

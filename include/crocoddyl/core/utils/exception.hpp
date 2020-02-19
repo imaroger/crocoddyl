@@ -11,7 +11,7 @@
 
 #include <exception>
 #include <sstream>
-#include "crocoddyl/core/utils/to-string.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/to-string.hpp"
 
 #if __cplusplus >= 201103L  // We are using C++11 or a later version
 #define NOEXCEPT noexcept

@@ -6,8 +6,8 @@
 // All rights reserved.
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "crocoddyl/core/utils/exception.hpp"
-#include "crocoddyl/core/solver-base.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
+#include "/local/imaroger/crocoddyl/include/crocoddyl/core/solver-base.hpp"
 
 namespace crocoddyl {
 
@@ -22,7 +22,7 @@ SolverAbstract::SolverAbstract(boost::shared_ptr<ShootingProblem> problem)
       dV_(0.),
       dVexp_(0.),
       th_acceptstep_(0.1),
-      th_stop_(1e-6),
+      th_stop_(1e-3),
       iter_(0) {
   // Allocate common data
   const std::size_t& T = problem_->get_T();
