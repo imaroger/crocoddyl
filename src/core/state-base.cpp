@@ -6,7 +6,7 @@
 // All rights reserved.
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/state-base.hpp"
+#include "crocoddyl/core/state-base.hpp"
 
 namespace crocoddyl {
 

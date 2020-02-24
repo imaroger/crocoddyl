@@ -9,7 +9,7 @@
 #ifndef CROCODDYL_CORE_STATES_EUCLIDEAN_HPP_
 #define CROCODDYL_CORE_STATES_EUCLIDEAN_HPP_
 
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/state-base.hpp"
+#include "crocoddyl/core/state-base.hpp"
 
 namespace crocoddyl {
 

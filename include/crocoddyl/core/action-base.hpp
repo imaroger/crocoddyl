@@ -12,9 +12,9 @@
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/state-base.hpp"
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/math.hpp"
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/to-string.hpp"
+#include "crocoddyl/core/state-base.hpp"
+#include "crocoddyl/core/utils/math.hpp"
+#include "crocoddyl/core/utils/to-string.hpp"
 
 namespace crocoddyl {
 

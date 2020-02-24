@@ -6,8 +6,8 @@
 // All rights reserved.
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/states/euclidean.hpp"
+#include "crocoddyl/core/utils/exception.hpp"
+#include "crocoddyl/core/states/euclidean.hpp"
 
 namespace crocoddyl {
 

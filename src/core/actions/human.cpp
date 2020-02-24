@@ -1,5 +1,5 @@
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/actions/human.hpp"
+#include "crocoddyl/core/utils/exception.hpp"
+#include "crocoddyl/core/actions/human.hpp"
 #include <iostream>
 #include <math.h>
 

@@ -11,8 +11,8 @@
 
 #include <stdexcept>
 #include <vector>
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/action-base.hpp"
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/to-string.hpp"
+#include "crocoddyl/core/action-base.hpp"
+#include "crocoddyl/core/utils/to-string.hpp"
 
 namespace crocoddyl {
 

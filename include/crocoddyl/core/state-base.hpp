@@ -13,7 +13,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/utils/exception.hpp"
+#include "crocoddyl/core/utils/exception.hpp"
 
 namespace crocoddyl {
 

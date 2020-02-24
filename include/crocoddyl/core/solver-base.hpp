@@ -10,7 +10,7 @@
 #define CROCODDYL_CORE_SOLVER_BASE_HPP_
 
 #include <vector>
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/optctrl/shooting.hpp"
+#include "crocoddyl/core/optctrl/shooting.hpp"
 
 namespace crocoddyl {
 

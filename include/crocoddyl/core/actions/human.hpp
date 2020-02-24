@@ -9,8 +9,8 @@
 #ifndef CROCODDYL_CORE_ACTIONS_Human_HPP_
 #define CROCODDYL_CORE_ACTIONS_Human_HPP_
 
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/action-base.hpp"
-#include "/local/imaroger/crocoddyl/include/crocoddyl/core/states/euclidean.hpp"
+#include "crocoddyl/core/action-base.hpp"
+#include "crocoddyl/core/states/euclidean.hpp"
 #include <stdexcept>
 
 namespace crocoddyl {
