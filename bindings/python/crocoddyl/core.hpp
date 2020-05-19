@@ -25,6 +25,8 @@
 #include "python/crocoddyl/core/states/euclidean.hpp"
 #include "python/crocoddyl/core/actions/unicycle.hpp"
 #include "python/crocoddyl/core/actions/human.hpp"
+#include "python/crocoddyl/core/actions/human_terminal_model.hpp"
+#include "python/crocoddyl/core/actions/human_running_model.hpp"
 #include "python/crocoddyl/core/actions/lqr.hpp"
 #include "python/crocoddyl/core/actions/diff-lqr.hpp"
 #include "python/crocoddyl/core/activations/quadratic.hpp"
@@ -55,7 +57,9 @@ void exposeCore() {
   exposeSolverAbstract();
   exposeStateEuclidean();
   exposeActionUnicycle();
-  exposeActionHuman();  
+  exposeActionHuman(); 
+  exposeActionHumanTerminal();  
+  exposeActionHumanRunning();
   exposeActionLQR();
   exposeDifferentialActionLQR();
   exposeActivationQuad();
