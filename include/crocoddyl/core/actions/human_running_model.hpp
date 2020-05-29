@@ -39,7 +39,7 @@ class ActionRunningModelHuman : public ActionModelAbstract {
   void set_alpha(const double slowing_param);
 
  private:
-  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(7);
+  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(5);
   Eigen::Vector3d final_state_;
   double dt_;
   double alpha_;

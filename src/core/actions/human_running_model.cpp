@@ -6,7 +6,7 @@
 namespace crocoddyl {
 
 ActionRunningModelHuman::ActionRunningModelHuman() : ActionModelAbstract(boost::make_shared<StateVector>(6), 3, 5), dt_(0.1) {
-  cost_weights_ << 1., 1.2, 1.7, 0.7, 5.2, 1. , 1.;
+  cost_weights_ << 1., 1.2, 1.7, 0.7, 5.2;
   final_state_ << 0., 0., 0.;
   alpha_ = 1.0;
 }
@@ -28,9 +28,9 @@ void ActionRunningModelHuman::calc(const boost::shared_ptr<ActionDataAbstract>& 
   ActionDataHumanRunning* d = static_cast<ActionDataHumanRunning*>(data.get());
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
-  d->xnext << x[0] + alpha_*(c*x[3]-s*x[5])*dt_, 
-    x[1] + alpha_*(c*x[5]+s*x[3])*dt_,
-    x[2] + x[4]*dt_,
+  d->xnext << x[0] + alpha_*(c*x[3]-s*x[4])*dt_, 
+    x[1] + alpha_*(c*x[4]+s*x[3])*dt_,
+    x[2] + x[5]*dt_,
     x[3] + u[0]*dt_,
     x[4] + u[1]*dt_,
     x[5] + u[2]*dt_;
@@ -125,9 +125,9 @@ void ActionRunningModelHuman::calcDiff(const boost::shared_ptr<ActionDataAbstrac
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
 
-  d->Fx << 1., 0., alpha_*(-s*x[3]-c*x[5]) * dt_, alpha_*c*dt_, 0., alpha_*-s*dt_,
-    0., 1., alpha_*(c*x[3]-s*x[5]) * dt_, alpha_*s*dt_, 0., alpha_*c*dt_,
-    0., 0., 1., 0., dt_, 0.,
+  d->Fx << 1., 0., alpha_*(-s*x[3]-c*x[4]) * dt_, alpha_*c*dt_, alpha_*-s*dt_, 0., 
+    0., 1., alpha_*(c*x[3]-s*x[4]) * dt_, alpha_*s*dt_, alpha_*c*dt_, 0., 
+    0., 0., 1., 0.,0.,  dt_,
     0., 0., 0., 1., 0., 0.,
     0., 0., 0., 0., 1., 0.,
     0., 0., 0., 0., 0., 1.;

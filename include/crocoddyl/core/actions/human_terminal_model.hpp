@@ -26,8 +26,7 @@ class ActionTerminalModelHuman : public ActionModelAbstract {
                 const Eigen::Ref<const Eigen::VectorXd>& u, const bool& recalc = true);
   boost::shared_ptr<ActionDataAbstract> createData();
 
-  double costFunction(double x, double y, double theta, 
-                        double u1, double u2, double u3);
+  double costFunction(double x, double y, double theta);
 
   const Eigen::VectorXd& get_cost_weights() const;
   void set_cost_weights(const Eigen::VectorXd& weights);
@@ -39,7 +38,7 @@ class ActionTerminalModelHuman : public ActionModelAbstract {
   void set_alpha(const double slowing_param);
 
  private:
-  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(7);
+  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(2);
   Eigen::Vector3d final_state_;
   double dt_;
   double alpha_;
