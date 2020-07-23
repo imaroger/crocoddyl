@@ -22,7 +22,7 @@ SolverAbstract::SolverAbstract(boost::shared_ptr<ShootingProblem> problem)
       dV_(0.),
       dVexp_(0.),
       th_acceptstep_(0.1),
-      th_stop_(1e-4),
+      th_stop_(1e-5),
       iter_(0) {
   // Allocate common data
   const std::size_t& T = problem_->get_T();
