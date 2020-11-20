@@ -1,10 +1,10 @@
-///////////////////////////////////////////////////////////////////////////////
-// BSD 3-Clause License
-//
-// Copyright (C) 2018-2019, LAAS-CNRS
-// Copyright note valid unless otherwise stated in individual files.
-// All rights reserved.
-///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+// // BSD 3-Clause License
+// //
+// // Copyright (C) 2018-2019, LAAS-CNRS
+// // Copyright note valid unless otherwise stated in individual files.
+// // All rights reserved.
+// ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef BINDINGS_PYTHON_CROCODDYL_CORE_ACTIONS_Estimation_Init_HPP_
 #define BINDINGS_PYTHON_CROCODDYL_CORE_ACTIONS_Estimation_Init_HPP_
@@ -64,11 +64,11 @@ void exposeActionEstimationInit() {
       .add_property(
           "currentState",
           bp::make_function(&ActionInitModelEstimation::get_current_state, bp::return_value_policy<bp::return_by_value>()),
-          bp::make_function(&ActionInitModelEstimation::set_current_state), "current state")
-  bp::register_ptr_to_python<boost::shared_ptr<ActionInitModelEstimation> >();
+          bp::make_function(&ActionInitModelEstimation::set_current_state), "current state");
+  bp::register_ptr_to_python<boost::shared_ptr<ActionDataEstimationInit> >();
 
-  bp::class_<ActionInitModelEstimation, bp::bases<ActionDataAbstract> >(
-      "ActionInitModelEstimation",
+  bp::class_<ActionDataEstimationInit, bp::bases<ActionDataAbstract> >(
+      "ActionDataEstimationInit",
       "Action data for the Human system.\n\n"
       "The Human data, apart of common one, contains the cost residuals used\n"
       "for the computation of calc and calcDiff.",
@@ -81,3 +81,4 @@ void exposeActionEstimationInit() {
 }  // namespace crocoddyl
 
 #endif  // BINDINGS_PYTHON_CROCODDYL_CORE_ACTIONS_Human_HPP_
+

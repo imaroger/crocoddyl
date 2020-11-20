@@ -27,6 +27,8 @@
 #include "python/crocoddyl/core/actions/human.hpp"
 #include "python/crocoddyl/core/actions/human_terminal_model.hpp"
 #include "python/crocoddyl/core/actions/human_running_model.hpp"
+#include "python/crocoddyl/core/actions/estimation_running_model.hpp"
+#include "python/crocoddyl/core/actions/estimation_init_model.hpp"
 #include "python/crocoddyl/core/actions/lqr.hpp"
 #include "python/crocoddyl/core/actions/diff-lqr.hpp"
 #include "python/crocoddyl/core/activations/quadratic.hpp"
@@ -60,6 +62,8 @@ void exposeCore() {
   exposeActionHuman(); 
   exposeActionHumanTerminal();  
   exposeActionHumanRunning();
+  exposeActionEstimationRunning();  
+  exposeActionEstimationInit();   
   exposeActionLQR();
   exposeDifferentialActionLQR();
   exposeActivationQuad();
