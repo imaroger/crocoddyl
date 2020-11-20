@@ -1,14 +1,13 @@
 #include "crocoddyl/core/utils/exception.hpp"
-#include "crocoddyl/core/actions/human_terminal_model.hpp"
+#include "crocoddyl/core/actions/estimation_init_model.hpp"
 #include <iostream>
 #include <math.h>
 
 namespace crocoddyl {
 
 ActionInitModelEstimation::ActionInitModelEstimation() : ActionModelAbstract(boost::make_shared<StateVector>(6), 3, 5), dt_(0.1) {
-  cost_weights_ << 1. , 1., 1., 1.;
-  final_state_ << 0., 0., 0.;
-  alpha_ = 1.0;
+  cost_weights_ << 1. , 1.;
+  current_state_ << 0., 0., 0.;
 }
 
 ActionInitModelEstimation::~ActionInitModelEstimation() {}
@@ -25,30 +24,28 @@ void ActionInitModelEstimation::calc(const boost::shared_ptr<ActionDataAbstract>
                  << "u has wrong dimension (it should be " + std::to_string(nu_) + ")");
   }
 
-  ActionDataHumanTerminal* d = static_cast<ActionDataHumanTerminal*>(data.get());
+  ActionDataEstimationInit* d = static_cast<ActionDataEstimationInit*>(data.get());
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
-  d->xnext << x[0] + alpha_*(c*x[3]-s*x[4])*dt_, 
-    x[1] + alpha_*(c*x[5]+s*x[4])*dt_,
+  d->xnext << x[0] + (c*x[3]-s*x[4])*dt_, 
+    x[1] + (c*x[5]+s*x[4])*dt_,
     x[2] + x[5]*dt_,
     x[3] + u[0]*dt_,
     x[4] + u[1]*dt_,
     x[5] + u[2]*dt_;
-  d->cost = costFunction(x[0],x[1],x[2],x[3],x[4],x[5]); 
+  d->cost = costFunction(x[0],x[1],x[2]); 
 
   // std::cout << "cost : " << d->cost << std::endl;
 }
 
-double ActionInitModelEstimation::costFunction(double x, double y, double theta,
-                                    double vforw, double vorth, double w){
+double ActionInitModelEstimation::costFunction(double x, double y, double theta){
   double cost;
-  double diff_theta = final_state_[2] - theta;
+  double diff_theta = current_state_[2] - theta;
   double diff_theta_final = diff_theta + 
     (( diff_theta > M_PI) ? - 2*M_PI : ((diff_theta< -M_PI) ? 2*M_PI: 0));
 
-  cost = cost_weights_[0]*(pow(final_state_[0]-x,2) + pow(final_state_[1]-y,2)) + 
-    cost_weights_[1]*pow(diff_theta_final,2) + cost_weights_[2]*pow(vforw,2) + 
-    cost_weights_[2]*pow(vorth,2) + cost_weights_[3]*pow(w,2);
+  cost = cost_weights_[0]*(pow(current_state_[0]-x,2) + pow(current_state_[1]-y,2)) + 
+    cost_weights_[1]*pow(diff_theta_final,2);
   return cost;
 }
 
@@ -68,7 +65,7 @@ void ActionInitModelEstimation::calcDiff(const boost::shared_ptr<ActionDataAbstr
   if (recalc) {
     calc(data, x, u);
   }
-  ActionDataHumanTerminal* d = static_cast<ActionDataHumanTerminal*>(data.get());
+  ActionDataEstimationInit* d = static_cast<ActionDataEstimationInit*>(data.get());
 
   // Cost derivatives
   double h = 1e-5;
@@ -76,13 +73,13 @@ void ActionInitModelEstimation::calcDiff(const boost::shared_ptr<ActionDataAbstr
   // std::cout << "--- state ---" << std::endl; 
   // std::cout << "x: " << x[0] << " ,y: " << x[1] << " ,theta: " << x[2] << " ,vf: "
   //   << x[3] << " ,w: " << x[4] << " ,vo: " << x[5] << std::endl;
-  // std::cout << final_state_ << std::endl; 
+  // std::cout << current_state_ << std::endl; 
   // std::cout << "--- control ---" << std::endl; 
   // std::cout << "u1: " << u[0] << "u2: " << u[1] << "u3: " << u[2] << std::endl;
 
-  d->Lx << -2*cost_weights_[0]*(final_state_[0]-x[0]),-2*cost_weights_[0]*(final_state_[1]-x[1]),
-    (costFunction(x[0],x[1],x[2]+h,x[3],x[4],x[5]) - costFunction(x[0],x[1],x[2],x[3],x[4],x[5]))/h,
-    2*cost_weights_[2]*x[3],2*cost_weights_[2]*x[4],2*cost_weights_[3]*x[5];
+  d->Lx << -2*cost_weights_[0]*(current_state_[0]-x[0]),-2*cost_weights_[0]*(current_state_[1]-x[1]),
+    (costFunction(x[0],x[1],x[2]+h) - costFunction(x[0],x[1],x[2]))/h,
+    0.,0.,0.;
 
   // std::cout << "--- Lx---" << std::endl; 
   // std::cout << d->Lx << std::endl;
@@ -93,9 +90,9 @@ void ActionInitModelEstimation::calcDiff(const boost::shared_ptr<ActionDataAbstr
   // std::cout << d->Lu << std::endl;   
 
   d->Lxx.diagonal() << 2*cost_weights_[0],2*cost_weights_[0],
-    (costFunction(x[0],x[1],x[2]+h,x[3],x[4],x[5]) - 2*costFunction(x[0],x[1],x[2],x[3],x[4],x[5]) 
-    + costFunction(x[0],x[1],x[2]-h,x[3],x[4],x[5]))/pow(h,2), // dl/dtheta²;
-    2*cost_weights_[2],2*cost_weights_[2],2*cost_weights_[3];
+    (costFunction(x[0],x[1],x[2]+h) - 2*costFunction(x[0],x[1],x[2]) 
+    + costFunction(x[0],x[1],x[2]-h))/pow(h,2), // dl/dtheta²;
+    0.,0.,0.;
 
   // std::cout << "--- Lxx---" << std::endl; 
   // std::cout << d->Lxx << std::endl;     
@@ -109,8 +106,8 @@ void ActionInitModelEstimation::calcDiff(const boost::shared_ptr<ActionDataAbstr
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
 
-  d->Fx << 1., 0., alpha_*(-s*x[3]-c*x[4]) * dt_, alpha_*c*dt_, alpha_*-s*dt_, 0., 
-    0., 1., alpha_*(c*x[3]-s*x[4]) * dt_, alpha_*s*dt_, alpha_*c*dt_, 0., 
+  d->Fx << 1., 0., (-s*x[3]-c*x[4]) * dt_, c*dt_, -s*dt_, 0., 
+    0., 1., (c*x[3]-s*x[4]) * dt_, s*dt_, c*dt_, 0., 
     0., 0., 1., 0.,0.,  dt_,
     0., 0., 0., 1., 0., 0.,
     0., 0., 0., 0., 1., 0.,
@@ -127,18 +124,14 @@ void ActionInitModelEstimation::calcDiff(const boost::shared_ptr<ActionDataAbstr
 }
 
 boost::shared_ptr<ActionDataAbstract> ActionInitModelEstimation::createData() {
-  return boost::make_shared<ActionDataHumanTerminal>(this);
+  return boost::make_shared<ActionDataEstimationInit>(this);
 }
 
 const Eigen::VectorXd& ActionInitModelEstimation::get_cost_weights() const { return cost_weights_; }
 
 void ActionInitModelEstimation::set_cost_weights(const Eigen::VectorXd& weights) { cost_weights_ = weights; }
 
-const Eigen::Vector3d& ActionInitModelEstimation::get_final_state() const { return final_state_; } 
+const Eigen::Vector3d& ActionInitModelEstimation::get_current_state() const { return current_state_; } 
 
-void ActionInitModelEstimation::set_final_state(const Eigen::Vector3d& statef){final_state_ = statef; }
-
-const double ActionInitModelEstimation::get_alpha() const { return alpha_; }
-
-void ActionInitModelEstimation::set_alpha(const double slowing_param){alpha_ = slowing_param; }
-}  // namespace crocoddyl
+void ActionInitModelEstimation::set_current_state(const Eigen::Vector3d& state){current_state_ = state; }
+}// namespace crocoddyl

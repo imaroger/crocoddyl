@@ -23,6 +23,8 @@ SET(${PROJECT_NAME}_SOURCES
   core/actions/human.cpp  
   core/actions/human_terminal_model.cpp 
   core/actions/human_running_model.cpp 
+  core/actions/estimation_running_model.cpp   
+  core/actions/estimation_init_model.cpp     
   core/actions/lqr.cpp
   core/actions/diff-lqr.cpp
   core/activations/quadratic.cpp
