@@ -26,7 +26,8 @@ class ActionInitModelEstimation : public ActionModelAbstract {
                 const Eigen::Ref<const Eigen::VectorXd>& u, const bool& recalc = true);
   boost::shared_ptr<ActionDataAbstract> createData();
 
-  double costFunction(double x, double y, double theta);
+  double costFunction(double x, double y, double theta, 
+                        double u1, double u2, double u3);
 
   const Eigen::VectorXd& get_cost_weights() const;
   void set_cost_weights(const Eigen::VectorXd& weights);
@@ -36,7 +37,7 @@ class ActionInitModelEstimation : public ActionModelAbstract {
 
 
  private:
-  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(2);
+  Eigen::VectorXd cost_weights_ = Eigen::VectorXd(6);
   Eigen::Vector3d current_state_;
   double dt_;
 
