@@ -28,7 +28,7 @@ void ActionInitModelEstimation::calc(const boost::shared_ptr<ActionDataAbstract>
   const double& c = std::cos(x[2]);
   const double& s = std::sin(x[2]);
   d->xnext << x[0] + (c*x[3]-s*x[4])*dt_, 
-    x[1] + (c*x[5]+s*x[4])*dt_,
+    x[1] + (c*x[4]+s*x[3])*dt_,
     x[2] + x[5]*dt_,
     x[3] + u[0]*dt_,
     x[4] + u[1]*dt_,
@@ -45,9 +45,9 @@ double ActionInitModelEstimation::costFunction(double x, double y, double theta,
   double diff_theta_final = diff_theta + 
     (( diff_theta > M_PI) ? - 2*M_PI : ((diff_theta< -M_PI) ? 2*M_PI: 0));
 
-  cost = cost_weights_[0] + cost_weights_[1]*pow(u1,2) + cost_weights_[2]*pow(u2,2) +
-    cost_weights_[3]*pow(u3,2) + cost_weights_[4]*(pow(current_state_[0]-x,2) + pow(current_state_[1]-y,2)) + 
-    cost_weights_[5]*pow(diff_theta_final,2);
+  cost = cost_weights_[0] + cost_weights_[1]*pow(u1,2) + cost_weights_[2]*pow(u2,2) 
+    + cost_weights_[3]*pow(u3,2) + cost_weights_[4]*(pow(current_state_[0]-x,2) 
+    + pow(current_state_[1]-y,2)) + cost_weights_[5]*pow(diff_theta_final,2);
   return cost;
 }
 
@@ -79,9 +79,10 @@ void ActionInitModelEstimation::calcDiff(const boost::shared_ptr<ActionDataAbstr
   // std::cout << "--- control ---" << std::endl; 
   // std::cout << "u1: " << u[0] << "u2: " << u[1] << "u3: " << u[2] << std::endl;
 
-  d->Lx << -2*cost_weights_[4]*(current_state_[0]-x[0]),-2*cost_weights_[4]*(current_state_[1]-x[1]),
+  d->Lx << (costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
+    (costFunction(x[0],x[1]+h,x[2],u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
     (costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/h,
-    0.,0.,0.;
+    0, 0, 0;
 
   // std::cout << "--- Lx---" << std::endl; 
   // std::cout << d->Lx << std::endl;
@@ -91,15 +92,30 @@ void ActionInitModelEstimation::calcDiff(const boost::shared_ptr<ActionDataAbstr
   // std::cout << "--- Lu---" << std::endl; 
   // std::cout << d->Lu << std::endl;   
 
-  d->Lxx.diagonal() << 2*cost_weights_[4],2*cost_weights_[4],
+  d->Lxx.block(0,0,3,3) << (costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
+    + costFunction(x[0]-h,x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dx²
+    (costFunction(x[0]+h,x[1]+h,x[2],u[0],u[1],u[2]) - costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) 
+    - costFunction(x[0],x[1]+h,x[2],u[0],u[1],u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dxdy
+    (costFunction(x[0]+h,x[1],x[2]+h,u[0],u[1],u[2]) - costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) 
+    - costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dxdtheta
+    (costFunction(x[0]+h,x[1]+h,x[2],u[0],u[1],u[2]) - costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) 
+    - costFunction(x[0],x[1]+h,x[2],u[0],u[1],u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dydx 
+    (costFunction(x[0],x[1]+h,x[2],u[0],u[1],u[2]) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
+    + costFunction(x[0],x[1]-h,x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dy² 
+    (costFunction(x[0],x[1]+h,x[2]+h,u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) 
+    - costFunction(x[0],x[1]+h,x[2],u[0],u[1],u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dydtheta 
+    (costFunction(x[0]+h,x[1],x[2]+h,u[0],u[1],u[2]) - costFunction(x[0]+h,x[1],x[2],u[0],u[1],u[2]) 
+    - costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dthetadx
+    (costFunction(x[0],x[1]+h,x[2]+h,u[0],u[1],u[2]) - costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) 
+    - costFunction(x[0],x[1]+h,x[2],u[0],u[1],u[2]) + costFunction(x[0],x[1],x[2],u[0],u[1],u[2]))/pow(h,2), // dl/dthetady
     (costFunction(x[0],x[1],x[2]+h,u[0],u[1],u[2]) - 2*costFunction(x[0],x[1],x[2],u[0],u[1],u[2]) 
-    + costFunction(x[0],x[1],x[2]-h,u[0],u[1],u[2]))/pow(h,2), // dl/dtheta²;
-    0.,0.,0.;
+    + costFunction(x[0],x[1],x[2]-h,u[0],u[1],u[2]))/pow(h,2); // dl/dtheta²;
 
   // std::cout << "--- Lxx---" << std::endl; 
   // std::cout << d->Lxx << std::endl;     
 
   d->Luu.diagonal() << 2*cost_weights_[1], 2*cost_weights_[2], 2*cost_weights_[3];
+
 
   // std::cout << "--- Luu---" << std::endl; 
   // std::cout << d->Luu << std::endl;     
